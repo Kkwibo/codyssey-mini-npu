@@ -1,6 +1,6 @@
 """Mini NPU Simulator - N×N 십자가(Cross)·X 패턴 자동 생성기.
 
-성능 분석(3×3 포함 모든 크기)과 보너스 모드 3에서 함께 쓴다.
+성능 분석에서 3×3을 포함한 모든 크기의 패턴을 만들 때 쓴다.
 """
 
 from matrix import Matrix
