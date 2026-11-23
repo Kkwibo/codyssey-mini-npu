@@ -2,6 +2,7 @@
 
 import os
 
+from benchmark import BENCH_SIZES, REPEAT, benchmark_sizes, print_perf_table
 from console import print_section
 from labels import CROSS, UNDECIDED, X
 from loader import load_filters, load_json, load_patterns
@@ -30,7 +31,10 @@ def run_json_mode(path=DATA_PATH):
         print_case(result)
         results.append(result)
 
-    print_section("[3] 결과 요약")
+    print_section(f"[3] 성능 분석 (평균/{REPEAT}회)")
+    print_perf_table(benchmark_sizes(BENCH_SIZES))
+
+    print_section("[4] 결과 요약")
     print_summary(results)
 
 

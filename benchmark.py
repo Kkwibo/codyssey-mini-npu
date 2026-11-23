@@ -2,7 +2,11 @@
 
 import time
 
+from generator import make_cross, make_x
+from mac import mac
+
 REPEAT = 10  # 크기별 반복 측정 횟수
+BENCH_SIZES = (3, 5, 13, 25)  # 성능 분석 기본 크기
 
 
 def measure_ms(func, *args, repeat=REPEAT):
@@ -18,6 +22,20 @@ def measure_ms(func, *args, repeat=REPEAT):
         func(*args)
         total += time.perf_counter() - start
     return total / repeat * 1000  # 초 → 밀리초(ms)
+
+
+def benchmark_sizes(sizes):
+    """크기별로 Cross 패턴과 X 필터를 생성해 MAC 1회 평균 시간을 잰다.
+
+    연산 시간은 값이 아니라 크기(N²)에 따라 달라지므로 생성기 패턴으로 잰다.
+    반환: [(N, 평균 ms), ...]
+    """
+    results = []
+    for n in sizes:
+        pattern = make_cross(n)  # 준비 작업은 측정 구간 밖에서
+        filt = make_x(n)
+        results.append((n, measure_ms(mac, pattern, filt)))
+    return results
 
 
 def print_perf_table(rows):
