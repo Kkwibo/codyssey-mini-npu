@@ -7,15 +7,19 @@ from mac import mac
 
 REPEAT = 10  # 크기별 반복 측정 횟수
 BENCH_SIZES = (3, 5, 13, 25)  # 성능 분석 기본 크기
+WARMUP_SECONDS = 0.05  # 측정 전에 같은 계산을 미리 돌리는 시간(0.05초)
 
 
 def measure_ms(func, *args, repeat=REPEAT):
     """func(*args)를 repeat번 실행하고 1회 평균 시간(ms)을 돌려준다.
 
     - 입력/출력/파일 읽기는 미리 끝내 두고 '연산 함수 호출 구간'만 잰다.
-    - 첫 호출은 준비 동작(워밍업)으로 1번 실행하고 측정에서 뺀다.
+    - 워밍업: 재기 전에 같은 계산을 WARMUP_SECONDS 동안 미리 반복한다(측정 제외).
+      CPU가 절전 상태에서 깨어나는 동안 첫 측정이 느리게 나오는 현상을 막기 위해서다.
     """
-    func(*args)  # 워밍업 (측정 제외)
+    end = time.perf_counter() + WARMUP_SECONDS
+    while time.perf_counter() < end:  # 워밍업 (측정 제외)
+        func(*args)
     total = 0.0
     for _ in range(repeat):
         start = time.perf_counter()
